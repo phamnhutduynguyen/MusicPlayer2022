@@ -4,8 +4,8 @@ var fft
 var particles = []
 
 function preload() {
-  song = loadSound('../audio/Cool Me Down.mp3')
-  img = loadImage('../img-background.jpg')
+  song = loadSound('audio/Cool Me Down.mp3')
+  img = loadImage('img-background.jpg')
 }
 
 function setup() {
