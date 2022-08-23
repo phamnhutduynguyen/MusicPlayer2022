@@ -1,10 +1,13 @@
-var song
+var song = []
 var img
 var fft
 var particles = []
+var songCount = 0
 
 function preload() {
-  song = loadSound('audio/Cool Me Down.mp3')
+  for (let i = 0; i < 10; i++){
+    song[i] = loadSound('audio/music-' + String(i) + '.mp3');
+  }
   img = loadImage('img-background.jpg')
 }
 
@@ -15,9 +18,63 @@ function setup() {
   rectMode(CENTER)
   fft = new p5.FFT(0.3)
 
-  img.filter(BLUR, 12)
+  img.filter(BLUR, 2)
 
   noLoop()
+
+  button = createButton('<')
+  button.position(10, 10)
+  button.mousePressed(backSong)
+
+  button = createButton('Play/Pause')
+  button.position(35, 10)
+  button.mousePressed(playOrPauseSong)
+
+  button = createButton('>')
+  button.position(120, 10)
+  button.mousePressed(nextSong)
+
+  //song[songCount].onended(nextSong)
+}
+
+function playOrPauseSong() {
+  if(song[songCount].isPlaying()) {
+    song[songCount].pause()
+    noLoop()
+  } else {
+    song[songCount].play()
+    loop()
+  }
+}
+
+function nextSong() {
+  if(song[songCount].isPlaying()) {
+    song[songCount].stop()
+    noLoop()
+  }
+
+  songCount++
+  if(songCount > 9){
+    songCount = 0;
+  }
+  song[songCount].play()
+  loop()
+}
+
+function backSong() {
+  if(song[songCount].isPlaying()) {
+    song[songCount].stop()
+    noLoop()
+  }
+
+  songCount--
+  if(songCount > 9){
+    songCount = 0;
+  } else if(songCount < 0) {
+    songCount = 9;
+  }
+  song[songCount].play()
+  loop()
 }
 
 function draw() {
@@ -53,7 +110,7 @@ function draw() {
     for(var i = 0; i < 180; i += 0.5) {
       var index = floor(map(i, 0, 180, 0, wave.length - 1))
   
-      var r = map(wave[index], -1, 1, 150, 350)
+      var r = map(wave[index], -1, 1, 100, 250)
   
       var x = r * sin(i) * t
       var y = r * cos(i)
@@ -76,19 +133,9 @@ function draw() {
   }
 }
 
-function mouseClicked() {
-  if(song.isPlaying()) {
-    song.pause()
-    noLoop()
-  } else {
-    song.play()
-    loop()
-  }
-}
-
 class Particle {
   constructor() {
-    this.pos = p5.Vector.random2D().mult(250)
+    this.pos = p5.Vector.random2D().mult(175)
     this.vel = createVector(0, 0)
     this.acc = this.pos.copy().mult(random(0.0001, 0.00001))
 
